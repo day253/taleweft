@@ -7,3 +7,13 @@
 - 正文是主要编辑界面。借鉴 ComfyUI 节点内部的展开式参数编辑，用于角色人声与章节片段；不要引入需要用户手动连线的全屏节点画布。
 - Agent 修改须有明确作用范围、变更预览及撤销能力；正文、角色和时间轴使用统一数据源。
 - 原型中的规则演示、模拟播放与真实模型能力必须明确区分。
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
