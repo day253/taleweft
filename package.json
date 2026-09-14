@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "dev:lan": "next dev --hostname 0.0.0.0",
+    "start:lan": "next start --hostname 0.0.0.0"
   },
   "dependencies": {
     "@tiptap/pm": "latest",
