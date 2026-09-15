@@ -4,6 +4,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { get, set, del } from "idb-keyval";
 import {
   applyPatches,
+  migrateOriginals,
+  restoreOriginal,
   seedProject,
   type Project,
   type Proposal,
@@ -35,7 +37,8 @@ type StudioState = {
   chapter: (id: string) => void;
   expand: (id: string | null) => void;
   mutate: (label: string, recipe: (p: Project) => void, key?: string) => void;
-  updateSegment: (id: string, data: Partial<Segment>) => void;
+  updateSegment: (id: string, data: Partial<Omit<Segment, "original">>) => void;
+  restoreOriginalText: (id: string) => void;
   updateCue: (id: string, data: Partial<Cue>) => void;
   updateCharacter: (id: string, data: Partial<Character>) => void;
   renameChapter: (id: string, title: string) => void;
@@ -99,10 +102,15 @@ export const useStudio = create<StudioState>()(
             const s = p.chapters
               .flatMap((c) => c.segments)
               .find((s) => s.id === id);
-            if (s) Object.assign(s, data, { status: "stale" });
+            if (s)
+              Object.assign(s, data, { original: s.original, status: "stale" });
           },
           `segment:${id}`,
         ),
+      restoreOriginalText: (id) => {
+        const next = restoreOriginal(getState().project, id);
+        getState().mutate("恢复片段原文", (p) => Object.assign(p, next));
+      },
       updateCue: (id, data) =>
         getState().mutate(
           "移动或编辑音轨",
@@ -179,7 +187,14 @@ export const useStudio = create<StudioState>()(
     }),
     {
       name: "taleweft-design-v1",
-      version: 1,
+      version: 2,
+      migrate: (persisted) => {
+        const state = persisted as Pick<
+          StudioState,
+          "project" | "revision" | "chapterId" | "selectedId"
+        >;
+        return { ...state, project: migrateOriginals(state.project) };
+      },
       skipHydration: true,
       storage: createJSONStorage(() => ({
         getItem: async (name) => (await get<string>(name)) ?? null,

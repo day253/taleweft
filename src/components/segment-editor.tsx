@@ -11,6 +11,7 @@ import {
   Music2,
   CloudRain,
   History,
+  FileDiff,
   ArrowUp,
   ArrowDown,
   CornerDownRight,
@@ -18,7 +19,6 @@ import {
 } from "lucide-react";
 import { useStudio } from "@/lib/store";
 import {
-  seedProject,
   segmentTimings,
   timeLabel,
   estimateDuration,
@@ -27,6 +27,7 @@ import {
   type Chapter,
   type Segment,
 } from "@/lib/project";
+import { TextCompare } from "./text-compare";
 import { DebugPanel } from "./trace-panel";
 
 export function SegmentEditor({
@@ -57,7 +58,7 @@ export function SegmentEditor({
     updateSegment,
     mutate,
   } = useStudio();
-  const [tab, setTab] = useState<"settings" | "debug">("settings");
+  const [tab, setTab] = useState<"settings" | "debug" | "text">("settings");
   const role =
     project.characters.find((c) => c.id === block.characterId) ??
     project.characters[0];
@@ -109,7 +110,10 @@ export function SegmentEditor({
     content: {
       type: "doc",
       content: [
-        { type: "paragraph", content: [{ type: "text", text: block.text }] },
+        {
+          type: "paragraph",
+          content: block.text ? [{ type: "text", text: block.text }] : [],
+        },
       ],
     },
     editorProps: {
@@ -196,6 +200,19 @@ export function SegmentEditor({
               <ChevronDown size={11} />
             </span>
             <span className="tone-label">{block.emotion}</span>
+            {!reading &&
+              block.original &&
+              block.text !== block.original.text && (
+                <button
+                  className="text-change-badge"
+                  onClick={() => {
+                    setTab("text");
+                    expand(block.id);
+                  }}
+                >
+                  正文有修改 · 对照
+                </button>
+              )}
             {block.status === "stale" && (
               <span
                 className="changed-dot"
@@ -273,6 +290,15 @@ export function SegmentEditor({
             >
               <History size={12} /> 生成记录
             </button>
+            <button
+              onClick={() => {
+                setTab("text");
+                expand(block.id);
+              }}
+            >
+              <FileDiff size={12} />
+              原文对照
+            </button>
             <button onClick={openLocal}>
               <Sparkles size={12} /> 局部修改
             </button>
@@ -298,6 +324,13 @@ export function SegmentEditor({
             >
               <History size={13} />
               生成记录 <span>Debug</span>
+            </button>
+            <button
+              className={tab === "text" ? "active" : ""}
+              onClick={() => setTab("text")}
+            >
+              <FileDiff size={13} />
+              原文对照
             </button>
             <button
               className="close-inspector"
@@ -378,6 +411,8 @@ export function SegmentEditor({
                 </button>
               </div>
             </>
+          ) : tab === "text" ? (
+            <TextCompare block={block} />
           ) : (
             <DebugPanel block={block} role={role} />
           )}

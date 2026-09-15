@@ -11,6 +11,7 @@ export type Character = {
 export type Segment = {
   id: string;
   text: string;
+  readonly original?: Readonly<{ text: string; kind: "import" | "sample" }>;
   characterId: string;
   emotion: string;
   speed: number;
@@ -39,6 +40,7 @@ export type Project = {
   id: string;
   title: string;
   format: Format;
+  readonly sourceText?: string;
   characters: Character[];
   chapters: Chapter[];
 };
@@ -70,9 +72,11 @@ export const segment = (
   characterId = "narrator",
   emotion = "自然",
   duration = estimateDuration(text),
+  originalKind: "import" | "sample" = "sample",
 ): Segment => ({
   id,
   text,
+  original: { text, kind: originalKind },
   characterId,
   emotion,
   duration,
@@ -250,7 +254,10 @@ export function applyPatches(project: Project, patches: Patch[]): Project {
       !copy.characters.some((c) => c.id === patch.changes.characterId)
     )
       throw new Error("角色不存在。");
-    Object.assign(target, patch.changes, { status: "stale" });
+    Object.assign(target, patch.changes, {
+      original: target.original,
+      status: "stale",
+    });
     if (patch.changes.text !== undefined)
       target.duration = estimateDuration(patch.changes.text);
   }
@@ -326,7 +333,16 @@ export function planImport(
     let chunk = "";
     const flush = () => {
       if (chunk.trim())
-        current!.segments.push(segment(uid("segment"), chunk.trim(), charId));
+        current!.segments.push(
+          segment(
+            uid("segment"),
+            chunk.trim(),
+            charId,
+            "自然",
+            estimateDuration(chunk.trim()),
+            "import",
+          ),
+        );
       chunk = "";
     };
     for (const sentence of sentences) {
@@ -339,6 +355,7 @@ export function planImport(
     throw new Error("只有章节标题，没有正文，请添加正文后重试。");
   return {
     id: uid("project"),
+    sourceText: text,
     title: title.trim() || "未命名作品",
     format,
     characters,
@@ -380,4 +397,30 @@ export function proposeEdit(
     summary: `将修改 ${targets.length} 个片段。正文内容保持不变。`,
     patches: targets.map((s) => ({ segmentId: s.id, changes })),
   };
+}
+
+/** Recover only known sample originals; legacy imports have no recoverable source. */
+export function migrateOriginals(project: Project): Project {
+  const copy = structuredClone(project);
+  if (copy.id !== seedProject.id) return copy;
+  const originals = new Map(
+    seedProject.chapters
+      .flatMap((c) => c.segments)
+      .map((s) => [s.id, s.original]),
+  );
+  for (const block of copy.chapters.flatMap((c) => c.segments)) {
+    if (!block.original && originals.has(block.id))
+      Object.assign(block, { original: originals.get(block.id) });
+  }
+  return copy;
+}
+
+export function restoreOriginal(project: Project, id: string): Project {
+  const block = project.chapters
+    .flatMap((c) => c.segments)
+    .find((s) => s.id === id);
+  if (!block?.original) throw new Error("此片段没有保存原文，无法恢复。");
+  return applyPatches(project, [
+    { segmentId: id, changes: { text: block.original.text } },
+  ]);
 }
