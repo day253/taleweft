@@ -8,7 +8,9 @@ TaleWeft 面向有声剧、广播剧和有声小说制作，计划通过可切�
 
 已提供可运行的章节编辑器前端交互原型：正文编辑、原文差异对照、角色参数、声音标注、可拖动音轨、局部修改预览、生成来源 Debug 和本机保存。
 
-当前未接通音频生成服务或 Agent。系统朗读用于交互预览，音轨与生成记录均明确标识为设计示例。
+已提供 DeepSeek Harness 插件：在 dsh 对话中读取当前章节与选区，提出文本、角色和音轨修改，在编辑器预览、应用或拒绝，支持撤销。安装方法见 [dsh 插件](plugins/dsh/README.md)。顶部原有的局部 Agent 演示仍是规则示例。
+
+当前未接通音频生成服务。系统朗读用于交互预览，音轨与生成记录均明确标识为设计示例。
 
 详见 [章节播放器交互设计](docs/chapter-player-design.md)。
 
@@ -25,6 +27,18 @@ npm run dev
 
 稳定预览可运行 `npm run build` 后 `npm run start:lan`。在同一局域网访问 `http://本机IP:3000`。数据保存在各设备、各地址自己的浏览器中，不会自动同步。
 
+安装 dsh 插件并配置模型后，可用 PM2 常驻运行编辑器（3000）和 dsh（3080）：
+
+```sh
+npm install -g @deepseek-ai/dsh@0.1.5-rc.2 pm2
+pm2 start ecosystem.config.cjs
+pm2 save
+# macOS：当前用户登录后自动恢复 PM2 服务，无需 sudo
+node scripts/install-macos-startup.mjs
+```
+
+`DSH_BIN` 可指定其他 dsh 可执行文件，`DSH_HOME` 可指定已有配置目录。dsh 当前版本仅监听本机回环地址，打开 `http://127.0.0.1:3080`；首次登录使用 `pm2 logs taleweft-dsh --nostream` 输出的认证链接。编辑器仍可通过局域网访问。密钥保存在 dsh 的本机凭据文件中，不写入 PM2 配置或仓库。
+
 ```sh
 npm test
 npm run typecheck
@@ -39,6 +53,7 @@ npm run build
 4. 点“原文对照”查看改稿前后差异，支持恢复本段原文和撤销。
 5. 点“生成记录”，修改正文后查看历史输入快照。
 6. 导入长文本，预览拆分后应用；使用顶部撤销恢复。
+7. 点“dsh”连接编辑器，将上下文指令发到 dsh 对话，查看 Agent 返回的修改建议。
 
 ## 支持的内容类型
 
