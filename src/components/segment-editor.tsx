@@ -161,7 +161,9 @@ export function SegmentEditor({
       id={`segment-${block.id}`}
       className={`segment ${selected ? "selected" : ""} ${expanded ? "is-expanded" : ""} ${music ? "music-covered" : ""} ${firstMusic ? "music-first" : ""} ${lastMusic ? "music-last" : ""}`}
       data-segment={block.id}
-      onClick={() => select(block.id)}
+      onClick={() => {
+        if (!selected) select(block.id);
+      }}
     >
       {firstMusic && (
         <button

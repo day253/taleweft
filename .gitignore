@@ -5,3 +5,7 @@ out/
 !.env.example
 *.tsbuildinfo
 .DS_Store
+
+.taleweft/
+plugins/dsh/dist/
+*.tgz

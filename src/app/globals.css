@@ -2528,3 +2528,135 @@ button:hover {
     padding: 12px;
   }
 }
+
+.dsh-button.connected {
+  color: #287355;
+  border-color: #cde4d6;
+  background: #f3faf6;
+}
+.dsh-button b {
+  background: #715bd7;
+  color: white;
+  padding: 1px 5px;
+  border-radius: 9px;
+  font-size: 10px;
+}
+.dsh-panel {
+  padding: 20px 24px;
+  overflow: auto;
+}
+.dsh-panel > p {
+  margin-top: 0;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #737e8e;
+}
+.dsh-connect {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+  border: 1px solid #e4e7ef;
+  border-radius: 8px;
+  margin: 14px 0 10px;
+  font-size: 12px;
+}
+.dsh-connect .online {
+  color: #287355;
+}
+.dsh-panel > small {
+  display: block;
+  color: #85909e;
+  line-height: 1.7;
+  font-size: 11px;
+}
+.dsh-prompt {
+  margin: 18px 0;
+}
+.dsh-prompt label {
+  display: block;
+  font-size: 12px;
+  color: #7e8592;
+}
+.dsh-prompt textarea {
+  display: block;
+  width: 100%;
+  min-height: 90px;
+  margin-top: 8px;
+  border: 1px solid #e2e5ed;
+  border-radius: 7px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.8;
+  background: #f9fafc;
+}
+.dsh-proposals h3 {
+  font-size: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 22px;
+}
+.dsh-proposals h3 span {
+  font-size: 11px;
+  color: #8993a0;
+  font-weight: 400;
+}
+.dsh-empty {
+  color: #8993a0;
+  font-size: 12px;
+  padding: 18px;
+  background: #f7f8fa;
+  border-radius: 8px;
+}
+.dsh-proposal {
+  margin-top: 14px;
+  border: 1px solid #e3dfed;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.dsh-proposal > header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: #f7f4fc;
+  font-size: 13px;
+}
+.dsh-proposal > header span {
+  font-size: 11px;
+  color: #85749c;
+}
+.dsh-edit {
+  padding: 12px 14px;
+}
+.dsh-edit > strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.dsh-field {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.dsh-field > span:first-child {
+  color: #8993a0;
+  min-width: 90px;
+}
+.dsh-field del {
+  color: #9d858b;
+}
+.dsh-field b {
+  color: #3e6d56;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.dsh-proposal > footer {
+  padding: 12px 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #eeeaf4;
+}

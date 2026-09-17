@@ -22,6 +22,7 @@ import {
   timeLabel,
   type Segment,
 } from "@/lib/project";
+import { AgentBridge } from "./agent-bridge";
 import { Sidebar } from "./sidebar";
 import { SegmentEditor } from "./segment-editor";
 import { Timeline, CueInspector } from "./timeline";
@@ -200,6 +201,7 @@ export default function Studio() {
           <strong>{project.title}</strong>
         </div>
         <div className="header-actions">
+          <AgentBridge />
           <span className="save-state">
             {persistence === "error" ? (
               <CloudOff size={13} />
