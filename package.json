@@ -23,7 +23,7 @@
     "proper-lockfile": "^4.1.2",
     "react": "latest",
     "react-dom": "latest",
-    "zod": "^4.6.5",
+    "zod": "^4.6.6",
     "zustand": "latest"
   },
   "devDependencies": {
